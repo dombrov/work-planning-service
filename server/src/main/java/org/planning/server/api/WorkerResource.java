@@ -1,6 +1,7 @@
 package org.planning.server.api;
 
 import org.planning.model.Worker;
+import org.planning.server.api.dto.WorkerDto;
 import org.planning.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +19,24 @@ public class WorkerResource {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Worker> getWorker(@PathVariable("id") String id) {
+    public ResponseEntity<WorkerDto> getWorker(@PathVariable("id") String id) {
         Worker worker = workerService.get(id);
         if (worker != null) {
-            return ResponseEntity.ok(worker);
+            return ResponseEntity.ok(WorkerDto.of(worker));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Worker> addWorker(@RequestBody Worker worker) {
+    public ResponseEntity<WorkerDto> addWorker(@RequestBody Worker worker) {
         Worker persistedWorker = workerService.add(worker);
-        return ResponseEntity.ok(persistedWorker);
+        return ResponseEntity.ok(WorkerDto.of(persistedWorker));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Worker> updateWorker(@PathVariable("id") String id, @RequestBody Worker worker) {
+    public ResponseEntity<WorkerDto> updateWorker(@PathVariable("id") String id, @RequestBody Worker worker) {
         Worker persistedWorker = workerService.update(new Worker(id, worker.getFirstName(), worker.getLastName(), worker.isActive()));
-        return ResponseEntity.ok(persistedWorker);
+        return ResponseEntity.ok(WorkerDto.of(persistedWorker));
     }
 }

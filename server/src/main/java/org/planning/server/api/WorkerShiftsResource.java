@@ -1,16 +1,16 @@
 package org.planning.server.api;
 
 import org.planning.model.Shift;
-import org.planning.server.api.dto.ExceptionDto;
 import org.planning.server.api.dto.ShiftCreateRequestDto;
+import org.planning.server.api.dto.ShiftDto;
 import org.planning.service.ShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RequestMapping("/api/v1/workers/{workerId}/shifts")
 @RestController
@@ -27,26 +27,29 @@ public class WorkerShiftsResource {
     public ResponseEntity getWorkerShifts(@PathVariable("workerId") String workerId, @RequestParam("from") Instant from, @RequestParam("to") Instant to) {
         Collection<Shift> shifts = shiftService.getShifts(workerId, from, to);
         if (shifts != null && !shifts.isEmpty()) {
-            return ResponseEntity.ok(shifts);
+            Collection<ShiftDto> shiftsDto = shifts.stream()
+                    .map(ShiftDto::of)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(shiftsDto);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("{shiftId}")
-    public ResponseEntity<Shift> getWorkerShift(@PathVariable("workerId") String workerId, @PathVariable("shiftId") Long shiftId) {
+    public ResponseEntity<ShiftDto> getWorkerShift(@PathVariable("workerId") String workerId, @PathVariable("shiftId") Long shiftId) {
         Shift shift = shiftService.get(workerId, shiftId);
         if (shift != null) {
-            return ResponseEntity.ok(shift);
+            return ResponseEntity.ok(ShiftDto.of(shift));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Shift> addWorkerShift(@PathVariable("workerId") String workerId, @RequestBody ShiftCreateRequestDto requestDto) {
+    public ResponseEntity<ShiftDto> addWorkerShift(@PathVariable("workerId") String workerId, @RequestBody ShiftCreateRequestDto requestDto) {
         Shift shift = shiftService.add(requestDto.date, requestDto.dayShift, workerId);
-        return ResponseEntity.ok(shift);
+        return ResponseEntity.ok(ShiftDto.of(shift));
     }
 
     @DeleteMapping
