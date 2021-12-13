@@ -4,6 +4,7 @@ import org.planning.model.Worker;
 import org.planning.repository.WorkerRepository;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryWorkerRepository implements WorkerRepository {
@@ -11,13 +12,8 @@ public class InMemoryWorkerRepository implements WorkerRepository {
     private final Map<String, Worker> repo = new ConcurrentHashMap<>();
 
     @Override
-    public Worker get(String id) {
-        return repo.get(id);
-    }
-
-    @Override
-    public boolean exist(String id) {
-        return repo.containsKey(id);
+    public Optional<Worker> getById(String id) {
+        return Optional.ofNullable(repo.get(id));
     }
 
     @Override

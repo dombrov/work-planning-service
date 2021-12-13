@@ -59,7 +59,7 @@ public class ShiftServiceImpl implements ShiftService {
             throw new ValidationException("Day shift number is required");
         }
 
-        if (workerRepository.exist(workerId) == false) {
+        if (workerRepository.getById(workerId).isEmpty()) {
             throw new ValidationException("Invalid worker with id = " + workerId);
         }
 

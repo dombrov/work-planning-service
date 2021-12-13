@@ -1,6 +1,5 @@
 package org.planning.service;
 
-import org.planning.Strings;
 import org.planning.exceptions.EntityAlreadyExistException;
 import org.planning.exceptions.NotFoundException;
 import org.planning.exceptions.ValidationException;
@@ -8,6 +7,8 @@ import org.planning.model.Worker;
 import org.planning.repository.WorkerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 import static org.planning.Strings.isBlank;
 
@@ -22,8 +23,8 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
-    public Worker get(String id) {
-        return workerRepository.get(id);
+    public Optional<Worker> get(String id) {
+        return workerRepository.getById(id);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class WorkerServiceImpl implements WorkerService {
             throw new ValidationException("Last name required");
         }
 
-        if (workerRepository.exist(worker.getId())) {
+        if (workerRepository.getById(worker.getId()).isPresent()) {
             throw new EntityAlreadyExistException("Worker already exist");
         }
 
@@ -49,7 +50,7 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public Worker update(Worker worker) {
-        if (workerRepository.exist(worker.getId()) == false) {
+        if (workerRepository.getById(worker.getId()).isEmpty()) {
             throw new NotFoundException("Not found worker id=" + worker.getId());
         }
         worker = workerRepository.save(worker);

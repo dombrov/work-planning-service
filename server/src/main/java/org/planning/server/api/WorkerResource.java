@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RequestMapping("/api/v1/workers")
 @RestController
 public class WorkerResource {
@@ -20,12 +22,9 @@ public class WorkerResource {
 
     @GetMapping("{id}")
     public ResponseEntity<WorkerDto> getWorker(@PathVariable("id") String id) {
-        Worker worker = workerService.get(id);
-        if (worker != null) {
-            return ResponseEntity.ok(WorkerDto.of(worker));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return workerService.get(id)
+                .map(worker -> ResponseEntity.ok(WorkerDto.of(worker)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping

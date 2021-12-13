@@ -12,6 +12,8 @@ import org.planning.exceptions.ValidationException;
 import org.planning.model.Worker;
 import org.planning.repository.WorkerRepository;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,14 +42,14 @@ class WorkerServiceImplTest {
         Worker expectedWorker = new Worker(workerId, "John", "Doe", true);
         mockGetWorker(expectedWorker);
 
-        Worker worker = workerService.get(workerId);
-        assertThat(worker).isNotNull();
-        assertThat(worker).isEqualTo(expectedWorker);
+        Optional<Worker> worker = workerService.get(workerId);
+        assertThat(worker).isNotEmpty();
+        assertThat(worker.get()).isEqualTo(expectedWorker);
     }
 
     @Test
     void get_givenAnExceptionThrownByRepository_thenPropagateFurther() {
-        Mockito.when(workerRepository.get(Mockito.anyString())).thenThrow(new RuntimeException("Test Error"));
+        Mockito.when(workerRepository.getById(Mockito.anyString())).thenThrow(new RuntimeException("Test Error"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> workerService.get("john.doe"), "RuntimeException is expected");
         assertThat(exception.getMessage()).isEqualTo("Test Error");
@@ -66,7 +68,8 @@ class WorkerServiceImplTest {
 
     @Test
     void add_givenWorkerAlreadyExist_thenThrowException() {
-        Mockito.when(workerRepository.exist(Mockito.anyString())).thenReturn(true);
+        Worker worker = new Worker("john.doe", "John", "Doe", true);
+        mockExistWorker(worker);
         assertThrows(EntityAlreadyExistException.class,
                 () -> workerService.add(new Worker("john.doe", "John", "Doe", true)),
                 "ValidationException is expected");
@@ -142,11 +145,11 @@ class WorkerServiceImplTest {
 
 
     private void mockGetWorker(Worker worker) {
-        Mockito.when(workerRepository.get(Mockito.eq(worker.getId()))).thenReturn(worker);
+        Mockito.when(workerRepository.getById(Mockito.eq(worker.getId()))).thenReturn(Optional.of(worker));
     }
 
     private void mockExistWorker(Worker worker) {
-        Mockito.when(workerRepository.exist(Mockito.eq(worker.getId()))).thenReturn(true);
+        Mockito.when(workerRepository.getById(Mockito.eq(worker.getId()))).thenReturn(Optional.of(worker));
     }
 
     private void mockSaveWorkerToReturnIdentity() {

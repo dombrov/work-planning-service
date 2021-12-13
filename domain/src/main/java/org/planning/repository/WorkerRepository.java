@@ -2,11 +2,11 @@ package org.planning.repository;
 
 import org.planning.model.Worker;
 
+import java.util.Optional;
+
 public interface WorkerRepository {
 
-    Worker get(String id);
-
-    boolean exist(String id);
+    Optional<Worker> getById(String id);
 
     Worker save(Worker worker);
 

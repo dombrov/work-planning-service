@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -94,7 +95,7 @@ class ShiftServiceImplTest {
 
     @Test
     void add_givenMissingWorker_thenThrowValidationException() {
-        Mockito.when(workerRepository.exist(Mockito.anyString())).thenReturn(false);
+        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.empty());
 
         assertThrows(ValidationException.class,
                 () -> shiftService.add(Instant.now(), DayShift.FIRST, "john.doe"),
@@ -103,13 +104,15 @@ class ShiftServiceImplTest {
 
     @Test
     void add_givenValidParameters_thenCreateShiftSuccessfully() {
+        String workerId = "john.doe";
+
         //given mocks
-        Mockito.when(workerRepository.exist(Mockito.anyString())).thenReturn(true);
+        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.of(new Worker(workerId, null, null, false)));
         mockSaveShiftToReturnIdentity();
 
         Instant date = Instant.now();
         DayShift dayShift = DayShift.FIRST;
-        String workerId = "john.doe";
+
 
         Shift shift = shiftService.add(date, dayShift, workerId);
         assertThat(shift).isNotNull();
@@ -123,7 +126,7 @@ class ShiftServiceImplTest {
         String workerId = "john.doe";
 
         //given mocks
-        Mockito.when(workerRepository.exist(Mockito.anyString())).thenReturn(true);
+        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.of(new Worker(workerId, null, null, false)));
         mockGetShift(Shift.of(date, dayShift, workerId));
 
         assertThrows(EntityAlreadyExistException.class,
@@ -136,8 +139,8 @@ class ShiftServiceImplTest {
         Instant date = Instant.now();
 
         //given mocks
-        Mockito.when(workerRepository.exist(Mockito.anyString())).thenReturn(true);
         Shift firstShift = Shift.of(date, DayShift.FIRST, "john.doe");
+        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.of(new Worker(firstShift.getWorkerId(), null, null, false)));
         Mockito.when(shiftRepository.getShifts(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(List.of(firstShift));
 
         assertThrows(EntityAlreadyExistException.class,
@@ -202,7 +205,7 @@ class ShiftServiceImplTest {
 
 
     private void mockGetWorker(Worker worker) {
-        Mockito.when(workerRepository.get(Mockito.eq(worker.getId()))).thenReturn(worker);
+        Mockito.when(workerRepository.getById(Mockito.eq(worker.getId()))).thenReturn(Optional.of(worker));
     }
 
     private void mockGetShift(Shift shift) {

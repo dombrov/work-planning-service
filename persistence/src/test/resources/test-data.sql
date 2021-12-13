@@ -1,0 +1,1 @@
+insert into workers (id, first_name, last_name, active) values ('test.user', 'Test', 'User', true);
