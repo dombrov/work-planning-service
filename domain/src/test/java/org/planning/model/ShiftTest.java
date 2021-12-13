@@ -20,7 +20,7 @@ class ShiftTest {
         for (DayShift dayShift : DayShift.values()) {
             Shift shift = Shift.of(date, dayShift, workerId);
             assertThat(shift).isNotNull();
-            assertThat(shift.getId()).isEqualTo(Long.toString(dayShift.startTimeOf(date).getEpochSecond()));
+            assertThat(shift.getId()).isEqualTo(dayShift.startTimeOf(date).getEpochSecond());
             assertThat(shift.getStartTime()).isEqualTo(dayShift.startTimeOf(date));
             assertThat(shift.getWorkerId()).isEqualTo(workerId);
         }

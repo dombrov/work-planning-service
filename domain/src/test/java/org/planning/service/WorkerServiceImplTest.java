@@ -32,8 +32,8 @@ class WorkerServiceImplTest {
     }
 
     @Test
-    void get_givenMissingWorker_thenGetNull() {
-        assertThat(workerService.get("john.doe")).isNull();
+    void get_givenMissingWorker_thenGetEmpty() {
+        assertThat(workerService.get("john.doe")).isEmpty();
     }
 
     @Test
