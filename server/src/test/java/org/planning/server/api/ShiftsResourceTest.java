@@ -11,7 +11,6 @@ import org.planning.server.api.v1.dto.ShiftDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -21,19 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ShiftsResourceTest extends AbstractIntegrationTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     protected WorkerRepository workerRepository;
 
     @Autowired
     protected ShiftRepository shiftRepository;
-
-    @BeforeEach
-    void setup() {
-        jdbcTemplate.execute("delete from shifts");
-        jdbcTemplate.execute("delete from workers");
-    }
 
     @Test
     void getShifts_givenNoShifts_thenExpectEmptyResponse() {

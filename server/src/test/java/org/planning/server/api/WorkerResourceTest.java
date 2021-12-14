@@ -1,6 +1,5 @@
 package org.planning.server.api;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.planning.model.Worker;
 import org.planning.repository.WorkerRepository;
@@ -8,22 +7,13 @@ import org.planning.server.api.v1.dto.WorkerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class WorkerResourceTest extends AbstractIntegrationTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     protected WorkerRepository workerRepository;
-
-    @BeforeEach
-    void setup() {
-        jdbcTemplate.execute("delete from workers");
-    }
 
     @Test
     void testGet_whenWorkerDoesNotExist_thenExpectNotFoundResponse() {
