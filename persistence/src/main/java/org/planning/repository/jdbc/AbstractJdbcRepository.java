@@ -1,4 +1,4 @@
-package org.planning.repository;
+package org.planning.repository.jdbc;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

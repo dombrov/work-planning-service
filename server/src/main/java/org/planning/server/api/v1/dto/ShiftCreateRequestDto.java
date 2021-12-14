@@ -1,4 +1,4 @@
-package org.planning.server.api.dto;
+package org.planning.server.api.v1.dto;
 
 import org.planning.model.DayShift;
 

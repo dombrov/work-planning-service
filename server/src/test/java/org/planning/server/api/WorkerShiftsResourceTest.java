@@ -7,9 +7,8 @@ import org.planning.model.Shift;
 import org.planning.model.Worker;
 import org.planning.repository.ShiftRepository;
 import org.planning.repository.WorkerRepository;
-import org.planning.server.api.dto.ShiftCreateRequestDto;
-import org.planning.server.api.dto.ShiftDto;
-import org.planning.server.api.dto.WorkerDto;
+import org.planning.server.api.v1.dto.ShiftCreateRequestDto;
+import org.planning.server.api.v1.dto.ShiftDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -160,7 +158,5 @@ class WorkerShiftsResourceTest extends AbstractIntegrationTest {
     private Shift givenPersistedShift(Shift shift) {
         return shiftRepository.save(shift);
     }
-
-
 
 }

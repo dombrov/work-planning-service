@@ -1,7 +1,7 @@
-package org.planning.server.api;
+package org.planning.server.api.v1;
 
 import org.planning.model.Worker;
-import org.planning.server.api.dto.WorkerDto;
+import org.planning.server.api.v1.dto.WorkerDto;
 import org.planning.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

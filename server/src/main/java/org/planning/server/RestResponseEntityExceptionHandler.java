@@ -3,7 +3,7 @@ package org.planning.server;
 import org.planning.exceptions.EntityAlreadyExistException;
 import org.planning.exceptions.NotFoundException;
 import org.planning.exceptions.ValidationException;
-import org.planning.server.api.dto.ExceptionDto;
+import org.planning.server.api.v1.dto.ExceptionDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

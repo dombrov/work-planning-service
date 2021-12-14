@@ -44,6 +44,20 @@ class JdbcShiftRepositoryTest extends JdbcTestContext {
     }
 
     @Test
+    void testFindShifts_given2Shifts_thenFindBoth() {
+        Shift[]  persistedShifts = given2Shifts();
+        Shift shift1 = persistedShifts[0];
+        Shift shift2 = persistedShifts[1];
+
+        Instant from = shift1.getStartTime().truncatedTo(ChronoUnit.DAYS);
+        Instant to = shift2.getStartTime().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS);
+
+        Collection<Shift> shifts = repository.findShifts(from, to);
+        assertThat(shifts).containsOnly(shift1, shift2);
+    }
+
+
+    @Test
     void testFindShifts_given2WorkerShifts_thenFindBoth() {
         Shift[]  persistedShifts = given2Shifts();
         Shift shift1 = persistedShifts[0];

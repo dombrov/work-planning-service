@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.planning.model.Worker;
 import org.planning.repository.WorkerRepository;
-import org.planning.server.api.dto.WorkerDto;
+import org.planning.server.api.v1.dto.WorkerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

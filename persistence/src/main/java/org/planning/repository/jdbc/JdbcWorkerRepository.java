@@ -1,7 +1,6 @@
 package org.planning.repository.jdbc;
 
 import org.planning.model.Worker;
-import org.planning.repository.AbstractJdbcRepository;
 import org.planning.repository.WorkerRepository;
 import org.planning.repository.jdbc.mappers.WorkerRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

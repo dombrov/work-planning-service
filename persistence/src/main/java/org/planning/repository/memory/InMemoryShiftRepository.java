@@ -22,6 +22,11 @@ public class InMemoryShiftRepository implements ShiftRepository {
     }
 
     @Override
+    public Collection<Shift> findShifts(Instant fromDate, Instant toDate) {
+        return List.of();
+    }
+
+    @Override
     public Collection<Shift> findShifts(String workerId, Instant fromDate, Instant toDate) {
         Map<Long, Shift> shifts = repo.get(workerId);
         if (shifts == null) {

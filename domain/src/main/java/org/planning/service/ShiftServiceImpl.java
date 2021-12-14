@@ -38,6 +38,14 @@ public class ShiftServiceImpl implements ShiftService {
     }
 
     @Override
+    public Collection<Shift> getShifts(Instant from, Instant to) {
+        if (from == null || to == null) {
+            throw new IllegalArgumentException("Required from and to arguments");
+        }
+        return shiftRepository.findShifts(from, to);
+    }
+
+    @Override
     public Collection<Shift> getShifts(String workerId, Instant from, Instant to) {
         validateWorkerId(workerId);
         if (from == null || to == null) {

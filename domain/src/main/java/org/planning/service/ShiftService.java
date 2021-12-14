@@ -11,6 +11,8 @@ public interface ShiftService {
 
     Optional<Shift> get(String workerId, Long shiftId);
 
+    Collection<Shift> getShifts(Instant from, Instant to);
+
     Collection<Shift> getShifts(String workerId, Instant from, Instant to);
 
     Shift add(Instant date, DayShift dayShift, String workerId);

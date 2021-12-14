@@ -1,8 +1,8 @@
-package org.planning.server.api;
+package org.planning.server.api.v1;
 
 import org.planning.model.Shift;
-import org.planning.server.api.dto.ShiftCreateRequestDto;
-import org.planning.server.api.dto.ShiftDto;
+import org.planning.server.api.v1.dto.ShiftCreateRequestDto;
+import org.planning.server.api.v1.dto.ShiftDto;
 import org.planning.service.ShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

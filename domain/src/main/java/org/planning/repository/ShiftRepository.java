@@ -10,6 +10,8 @@ public interface ShiftRepository {
 
     Optional<Shift> findBy(String workerId, Long shiftId);
 
+    Collection<Shift> findShifts(Instant fromDate, Instant toDate);
+
     Collection<Shift> findShifts(String workerId, Instant fromDate, Instant toDate);
 
     Shift save(Shift shift);
