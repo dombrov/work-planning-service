@@ -18,7 +18,7 @@ public class AbstractIntegrationTest {
     protected String baseUri;
 
     @BeforeEach
-    void setup() {
+    void globalSetup() {
         baseUri = "http://localhost:" + port + "/api/v1";
     }
 

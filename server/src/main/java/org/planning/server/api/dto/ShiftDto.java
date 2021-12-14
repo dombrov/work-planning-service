@@ -3,6 +3,7 @@ package org.planning.server.api.dto;
 import org.planning.model.Shift;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class ShiftDto {
 
@@ -20,4 +21,16 @@ public class ShiftDto {
         return dto;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShiftDto shiftDto = (ShiftDto) o;
+        return Objects.equals(id, shiftDto.id) && Objects.equals(workerId, shiftDto.workerId) && Objects.equals(startTime, shiftDto.startTime) && Objects.equals(endTime, shiftDto.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, workerId, startTime, endTime);
+    }
 }

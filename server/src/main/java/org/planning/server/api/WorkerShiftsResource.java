@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequestMapping("/api/v1/workers/{workerId}/shifts")
@@ -50,7 +49,7 @@ public class WorkerShiftsResource {
         return ResponseEntity.ok(ShiftDto.of(shift));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{shiftId}")
     public void deleteWorkerShift(@PathVariable("workerId") String workerId, @PathVariable("shiftId") Long shiftId) {
         shiftService.delete(workerId, shiftId);
     }

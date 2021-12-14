@@ -2,6 +2,8 @@ package org.planning.server.api.dto;
 
 import org.planning.model.Worker;
 
+import java.util.Objects;
+
 public class WorkerDto {
     public String id;
     public String firstName;
@@ -17,4 +19,16 @@ public class WorkerDto {
         return dto;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WorkerDto workerDto = (WorkerDto) o;
+        return active == workerDto.active && Objects.equals(id, workerDto.id) && Objects.equals(firstName, workerDto.firstName) && Objects.equals(lastName, workerDto.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, active);
+    }
 }
