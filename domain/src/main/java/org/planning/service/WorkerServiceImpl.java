@@ -24,7 +24,7 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public Optional<Worker> get(String id) {
-        return workerRepository.getById(id);
+        return workerRepository.findById(id);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class WorkerServiceImpl implements WorkerService {
             throw new ValidationException("Last name required");
         }
 
-        if (workerRepository.getById(worker.getId()).isPresent()) {
+        if (workerRepository.findById(worker.getId()).isPresent()) {
             throw new EntityAlreadyExistException("Worker already exist");
         }
 
@@ -50,7 +50,7 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public Worker update(Worker worker) {
-        if (workerRepository.getById(worker.getId()).isEmpty()) {
+        if (workerRepository.findById(worker.getId()).isEmpty()) {
             throw new NotFoundException("Not found worker id=" + worker.getId());
         }
         worker = workerRepository.save(worker);

@@ -13,16 +13,16 @@ public class InMemoryShiftRepository implements ShiftRepository {
     private final Map<String, Map<Long, Shift>> repo = new ConcurrentHashMap<>();
 
     @Override
-    public Shift get(String workerId, Long id) {
+    public Optional<Shift> findBy(String workerId, Long id) {
         Map<Long, Shift> shifts = repo.get(workerId);
         if (shifts == null) {
-            return null;
+            return Optional.empty();
         }
-        return shifts.get(id);
+        return Optional.of(shifts.get(id));
     }
 
     @Override
-    public Collection<Shift> getShifts(String workerId, Instant fromDate, Instant toDate) {
+    public Collection<Shift> findShifts(String workerId, Instant fromDate, Instant toDate) {
         Map<Long, Shift> shifts = repo.get(workerId);
         if (shifts == null) {
             return List.of();
@@ -43,11 +43,10 @@ public class InMemoryShiftRepository implements ShiftRepository {
     }
 
     @Override
-    public Shift delete(String workerId, Long id) {
+    public void delete(String workerId, Long id) {
         Map<Long, Shift> shifts = repo.get(workerId);
         if (shifts != null) {
-            return shifts.remove(id);
+            shifts.remove(id);
         }
-        return null;
     }
 }

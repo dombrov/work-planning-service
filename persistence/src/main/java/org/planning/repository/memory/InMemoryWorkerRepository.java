@@ -12,7 +12,7 @@ public class InMemoryWorkerRepository implements WorkerRepository {
     private final Map<String, Worker> repo = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<Worker> getById(String id) {
+    public Optional<Worker> findById(String id) {
         return Optional.ofNullable(repo.get(id));
     }
 

@@ -40,7 +40,7 @@ class WorkerServiceImplTest {
     void get_givenAWorker_thenGetWorkerProfileById() {
         String workerId = "john.doe";
         Worker expectedWorker = new Worker(workerId, "John", "Doe", true);
-        mockGetWorker(expectedWorker);
+        stubPersistedWorker(expectedWorker);
 
         Optional<Worker> worker = workerService.get(workerId);
         assertThat(worker).isNotEmpty();
@@ -49,7 +49,7 @@ class WorkerServiceImplTest {
 
     @Test
     void get_givenAnExceptionThrownByRepository_thenPropagateFurther() {
-        Mockito.when(workerRepository.getById(Mockito.anyString())).thenThrow(new RuntimeException("Test Error"));
+        Mockito.when(workerRepository.findById(Mockito.anyString())).thenThrow(new RuntimeException("Test Error"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> workerService.get("john.doe"), "RuntimeException is expected");
         assertThat(exception.getMessage()).isEqualTo("Test Error");
@@ -58,7 +58,7 @@ class WorkerServiceImplTest {
     @Test
     void add_givenAllRequiredFields_thenCreateNewWorkerProfile() {
         //given creating new worker mock
-        mockSaveWorkerToReturnIdentity();
+        stubSaveWorkerToReturnIdentity();
 
         Worker workerToAdd = new Worker("john.doe", "John", "Doe", true);
         Worker worker = workerService.add(workerToAdd);
@@ -69,7 +69,7 @@ class WorkerServiceImplTest {
     @Test
     void add_givenWorkerAlreadyExist_thenThrowException() {
         Worker worker = new Worker("john.doe", "John", "Doe", true);
-        mockExistWorker(worker);
+        stubPersistedWorker(worker);
         assertThrows(EntityAlreadyExistException.class,
                 () -> workerService.add(new Worker("john.doe", "John", "Doe", true)),
                 "ValidationException is expected");
@@ -126,8 +126,8 @@ class WorkerServiceImplTest {
     void update_givenValidWorkerProfile() {
         //given get worker mock
         Worker newWorker = new Worker("john.doe", "John", "Doe", true);
-        mockExistWorker(newWorker);
-        mockSaveWorkerToReturnIdentity();
+        stubPersistedWorker(newWorker);
+        stubSaveWorkerToReturnIdentity();
 
         Worker updateRequest = new Worker(newWorker.getId(), newWorker.getFirstName(), newWorker.getLastName(), newWorker.isActive());
 
@@ -144,15 +144,11 @@ class WorkerServiceImplTest {
 
 
 
-    private void mockGetWorker(Worker worker) {
-        Mockito.when(workerRepository.getById(Mockito.eq(worker.getId()))).thenReturn(Optional.of(worker));
+    private void stubPersistedWorker(Worker worker) {
+        Mockito.when(workerRepository.findById(Mockito.eq(worker.getId()))).thenReturn(Optional.of(worker));
     }
 
-    private void mockExistWorker(Worker worker) {
-        Mockito.when(workerRepository.getById(Mockito.eq(worker.getId()))).thenReturn(Optional.of(worker));
-    }
-
-    private void mockSaveWorkerToReturnIdentity() {
+    private void stubSaveWorkerToReturnIdentity() {
         Mockito.when(workerRepository.save(Mockito.any(Worker.class))).thenAnswer(i -> {
             Worker worker = i.getArgument(0);
             return worker;

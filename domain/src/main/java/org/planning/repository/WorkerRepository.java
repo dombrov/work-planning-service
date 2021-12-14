@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface WorkerRepository {
 
-    Optional<Worker> getById(String id);
+    Optional<Worker> findById(String id);
 
     Worker save(Worker worker);
 

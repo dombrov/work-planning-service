@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequestMapping("/api/v1/workers/{workerId}/shifts")
@@ -38,12 +39,9 @@ public class WorkerShiftsResource {
 
     @GetMapping("{shiftId}")
     public ResponseEntity<ShiftDto> getWorkerShift(@PathVariable("workerId") String workerId, @PathVariable("shiftId") Long shiftId) {
-        Shift shift = shiftService.get(workerId, shiftId);
-        if (shift != null) {
-            return ResponseEntity.ok(ShiftDto.of(shift));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return shiftService.get(workerId, shiftId)
+                .map(shift -> ResponseEntity.ok(ShiftDto.of(shift)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping

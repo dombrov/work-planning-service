@@ -45,7 +45,7 @@ class ShiftServiceImplTest {
 
     @Test
     void get_givenEmptyRepository_thenReturnNull() {
-        assertThat(shiftService.get("workerId", 1L)).isNull();
+        assertThat(shiftService.get("workerId", 1L)).isEmpty();
     }
 
     @Test
@@ -72,11 +72,11 @@ class ShiftServiceImplTest {
     @Test
     void get_givenPersistedShift_thenShiftById() {
         Shift expectedShift = new Shift(1L, "john.doe", Instant.now());
-        mockGetShift(expectedShift);
+        stubPersistedShift(expectedShift);
 
-        Shift shift = shiftService.get(expectedShift.getWorkerId(), expectedShift.getId());
-        assertThat(shift).isNotNull();
-        assertThat(shift).isEqualTo(expectedShift);
+        Optional<Shift> shift = shiftService.get(expectedShift.getWorkerId(), expectedShift.getId());
+        assertThat(shift).isNotEmpty();
+        assertThat(shift.get()).isEqualTo(expectedShift);
     }
 
     @Test
@@ -95,7 +95,7 @@ class ShiftServiceImplTest {
 
     @Test
     void add_givenMissingWorker_thenThrowValidationException() {
-        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.empty());
+        Mockito.when(workerRepository.findById(Mockito.anyString())).thenReturn(Optional.empty());
 
         assertThrows(ValidationException.class,
                 () -> shiftService.add(Instant.now(), DayShift.FIRST, "john.doe"),
@@ -107,12 +107,11 @@ class ShiftServiceImplTest {
         String workerId = "john.doe";
 
         //given mocks
-        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.of(new Worker(workerId, null, null, false)));
-        mockSaveShiftToReturnIdentity();
+        Mockito.when(workerRepository.findById(Mockito.anyString())).thenReturn(Optional.of(new Worker(workerId, null, null, false)));
+        stubOnAddShiftToReturnIdentity();
 
         Instant date = Instant.now();
         DayShift dayShift = DayShift.FIRST;
-
 
         Shift shift = shiftService.add(date, dayShift, workerId);
         assertThat(shift).isNotNull();
@@ -126,8 +125,8 @@ class ShiftServiceImplTest {
         String workerId = "john.doe";
 
         //given mocks
-        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.of(new Worker(workerId, null, null, false)));
-        mockGetShift(Shift.of(date, dayShift, workerId));
+        Mockito.when(workerRepository.findById(Mockito.anyString())).thenReturn(Optional.of(new Worker(workerId, null, null, false)));
+        stubPersistedShift(Shift.of(date, dayShift, workerId));
 
         assertThrows(EntityAlreadyExistException.class,
                 () -> shiftService.add(date, dayShift, workerId),
@@ -140,8 +139,8 @@ class ShiftServiceImplTest {
 
         //given mocks
         Shift firstShift = Shift.of(date, DayShift.FIRST, "john.doe");
-        Mockito.when(workerRepository.getById(Mockito.anyString())).thenReturn(Optional.of(new Worker(firstShift.getWorkerId(), null, null, false)));
-        Mockito.when(shiftRepository.getShifts(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(List.of(firstShift));
+        Mockito.when(workerRepository.findById(Mockito.anyString())).thenReturn(Optional.of(new Worker(firstShift.getWorkerId(), null, null, false)));
+        Mockito.when(shiftRepository.findShifts(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(List.of(firstShift));
 
         assertThrows(EntityAlreadyExistException.class,
                 () -> shiftService.add(date, DayShift.SECOND, "john.doe"),
@@ -166,12 +165,11 @@ class ShiftServiceImplTest {
         Shift shift = Shift.of(Instant.now(), DayShift.FIRST, "john.doe");
 
         //given mocks
-        mockGetShift(shift);
-        Mockito.when(shiftRepository.delete(Mockito.eq(shift.getWorkerId()), Mockito.eq(shift.getId()))).thenAnswer(i -> {
-            Mockito.when(shiftRepository.get(Mockito.eq(shift.getWorkerId()), Mockito.eq(shift.getId()))).thenReturn(null);
+        stubPersistedShift(shift);
+        Mockito.doAnswer(i -> {
+            Mockito.when(shiftRepository.findBy(Mockito.eq(shift.getWorkerId()), Mockito.eq(shift.getId()))).thenReturn(Optional.empty());
             return null;
-        });
-
+        }).when(shiftRepository).delete(Mockito.eq(shift.getWorkerId()), Mockito.eq(shift.getId()));
 
         //validate shift exist first
         assertThat(shiftService.get(shift.getWorkerId(), shift.getId())).isNotNull();
@@ -179,7 +177,7 @@ class ShiftServiceImplTest {
         shiftService.delete(shift.getWorkerId(), shift.getId());
 
         //validate get shift return null
-        assertThat(shiftService.get(shift.getWorkerId(), shift.getId())).isNull();
+        assertThat(shiftService.get(shift.getWorkerId(), shift.getId())).isEmpty();
 
     }
 
@@ -203,16 +201,12 @@ class ShiftServiceImplTest {
                 "ValidationException is expected");
     }
 
-
-    private void mockGetWorker(Worker worker) {
-        Mockito.when(workerRepository.getById(Mockito.eq(worker.getId()))).thenReturn(Optional.of(worker));
+    private void stubPersistedShift(Shift shift) {
+        Mockito.when(shiftRepository.findBy(Mockito.eq(shift.getWorkerId()), Mockito.eq(shift.getId())))
+                .thenReturn(Optional.of(shift));
     }
 
-    private void mockGetShift(Shift shift) {
-        Mockito.when(shiftRepository.get(Mockito.eq(shift.getWorkerId()), Mockito.eq(shift.getId()))).thenReturn(shift);
-    }
-
-    private void mockSaveShiftToReturnIdentity() {
+    private void stubOnAddShiftToReturnIdentity() {
         //given creating new worker mock
         Mockito.when(shiftRepository.save(Mockito.any(Shift.class))).thenAnswer(i -> {
             Shift shift = i.getArgument(0);

@@ -10,11 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Optional;
 
 import static org.planning.Strings.isBlank;
 
@@ -31,11 +30,11 @@ public class ShiftServiceImpl implements ShiftService {
     }
 
     @Override
-    public Shift get(String workerId, Long shiftId) {
+    public Optional<Shift> get(String workerId, Long shiftId) {
         validateWorkerId(workerId);
         validateShiftId(shiftId);
 
-        return shiftRepository.get(workerId, shiftId);
+        return shiftRepository.findBy(workerId, shiftId);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class ShiftServiceImpl implements ShiftService {
         if (from == null || to == null) {
             throw new IllegalArgumentException("Required from and to arguments");
         }
-        return shiftRepository.getShifts(workerId, from, to);
+        return shiftRepository.findShifts(workerId, from, to);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ShiftServiceImpl implements ShiftService {
             throw new ValidationException("Day shift number is required");
         }
 
-        if (workerRepository.getById(workerId).isEmpty()) {
+        if (workerRepository.findById(workerId).isEmpty()) {
             throw new ValidationException("Invalid worker with id = " + workerId);
         }
 
@@ -69,7 +68,7 @@ public class ShiftServiceImpl implements ShiftService {
 
         Shift shift = Shift.of(date, dayShift, workerId);
 
-        if (shiftRepository.get(shift.getWorkerId(), shift.getId()) != null) {
+        if (shiftRepository.findBy(shift.getWorkerId(), shift.getId()).isPresent()) {
             throw new EntityAlreadyExistException("Shift already exist");
         }
 
@@ -99,7 +98,7 @@ public class ShiftServiceImpl implements ShiftService {
     private boolean existShiftOnSameDay(String workerId, Instant day) {
         Instant dayStart = day.truncatedTo(ChronoUnit.DAYS);
         Instant nextDayStart = dayStart.plus(1, ChronoUnit.DAYS);
-        return shiftRepository.getShifts(workerId, dayStart, nextDayStart).isEmpty() == false;
+        return shiftRepository.findShifts(workerId, dayStart, nextDayStart).isEmpty() == false;
     }
 
 }

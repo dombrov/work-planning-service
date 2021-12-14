@@ -5,10 +5,11 @@ import org.planning.model.Shift;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface ShiftService {
 
-    Shift get(String workerId, Long shiftId);
+    Optional<Shift> get(String workerId, Long shiftId);
 
     Collection<Shift> getShifts(String workerId, Instant from, Instant to);
 
