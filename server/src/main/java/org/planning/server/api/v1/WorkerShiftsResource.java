@@ -24,12 +24,12 @@ public class WorkerShiftsResource {
     }
 
     @GetMapping()
-    public ResponseEntity getWorkerShifts(@PathVariable("workerId") String workerId, @RequestParam("from") Instant from, @RequestParam("to") Instant to) {
+    public ResponseEntity<ShiftDto[]> getWorkerShifts(@PathVariable("workerId") String workerId, @RequestParam("from") Instant from, @RequestParam("to") Instant to) {
         Collection<Shift> shifts = shiftService.getShifts(workerId, from, to);
         if (shifts != null && !shifts.isEmpty()) {
-            Collection<ShiftDto> shiftsDto = shifts.stream()
+            ShiftDto[] shiftsDto = shifts.stream()
                     .map(ShiftDto::of)
-                    .collect(Collectors.toList());
+                    .toArray(ShiftDto[]::new);
             return ResponseEntity.ok(shiftsDto);
         } else {
             return ResponseEntity.notFound().build();

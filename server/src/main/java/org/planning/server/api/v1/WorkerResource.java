@@ -26,14 +26,15 @@ public class WorkerResource {
     }
 
     @PostMapping
-    public ResponseEntity<WorkerDto> addWorker(@RequestBody Worker worker) {
+    public ResponseEntity<WorkerDto> addWorker(@RequestBody WorkerDto workerDto) {
+        Worker worker = new Worker(workerDto.id, workerDto.firstName, workerDto.lastName, workerDto.active);
         Worker persistedWorker = workerService.add(worker);
         return ResponseEntity.ok(WorkerDto.of(persistedWorker));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<WorkerDto> updateWorker(@PathVariable("id") String id, @RequestBody Worker worker) {
-        Worker persistedWorker = workerService.update(new Worker(id, worker.getFirstName(), worker.getLastName(), worker.isActive()));
+    public ResponseEntity<WorkerDto> updateWorker(@PathVariable("id") String id, @RequestBody WorkerDto workerDto) {
+        Worker persistedWorker = workerService.update(new Worker(id, workerDto.firstName, workerDto.lastName, workerDto.active));
         return ResponseEntity.ok(WorkerDto.of(persistedWorker));
     }
 }

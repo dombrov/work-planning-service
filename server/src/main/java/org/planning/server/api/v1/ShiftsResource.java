@@ -23,12 +23,12 @@ public class ShiftsResource {
     }
 
     @GetMapping()
-    public ResponseEntity getShifts(@RequestParam("from") Instant from, @RequestParam("to") Instant to) {
+    public ResponseEntity<ShiftDto[]> getShifts(@RequestParam("from") Instant from, @RequestParam("to") Instant to) {
         Collection<Shift> shifts = shiftService.getShifts(from, to);
         if (shifts != null && !shifts.isEmpty()) {
-            Collection<ShiftDto> shiftsDto = shifts.stream()
+            ShiftDto[] shiftsDto = shifts.stream()
                     .map(ShiftDto::of)
-                    .collect(Collectors.toList());
+                    .toArray(ShiftDto[]::new);
             return ResponseEntity.ok(shiftsDto);
         } else {
             return ResponseEntity.notFound().build();
