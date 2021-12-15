@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface WorkerService {
 
-    Optional<Worker> get(String id);
+    Optional<Worker> findBy(String id);
 
     Worker add(Worker worker);
 

@@ -20,7 +20,7 @@ public class WorkerResource {
 
     @GetMapping("{id}")
     public ResponseEntity<WorkerDto> getWorker(@PathVariable("id") String id) {
-        return workerService.get(id)
+        return workerService.findBy(id)
                 .map(worker -> ResponseEntity.ok(WorkerDto.of(worker)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

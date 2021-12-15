@@ -32,26 +32,26 @@ class WorkerServiceImplTest {
     }
 
     @Test
-    void get_givenMissingWorker_thenGetEmpty() {
-        assertThat(workerService.get("john.doe")).isEmpty();
+    void findById_givenMissingWorker_thenGetEmpty() {
+        assertThat(workerService.findBy("john.doe")).isEmpty();
     }
 
     @Test
-    void get_givenAWorker_thenGetWorkerProfileById() {
+    void findById_givenAWorker_thenGetWorkerProfileById() {
         String workerId = "john.doe";
         Worker expectedWorker = new Worker(workerId, "John", "Doe", true);
         stubPersistedWorker(expectedWorker);
 
-        Optional<Worker> worker = workerService.get(workerId);
+        Optional<Worker> worker = workerService.findBy(workerId);
         assertThat(worker).isNotEmpty();
         assertThat(worker.get()).isEqualTo(expectedWorker);
     }
 
     @Test
-    void get_givenAnExceptionThrownByRepository_thenPropagateFurther() {
+    void findById_givenAnExceptionThrownByRepository_thenPropagateFurther() {
         Mockito.when(workerRepository.findById(Mockito.anyString())).thenThrow(new RuntimeException("Test Error"));
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> workerService.get("john.doe"), "RuntimeException is expected");
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> workerService.findBy("john.doe"), "RuntimeException is expected");
         assertThat(exception.getMessage()).isEqualTo("Test Error");
     }
 
