@@ -143,32 +143,6 @@ or
 ```
 
 
-
-## Build and Run Locally
-
-Clone the project
-
-Requirements: **Java 11** and **Apache Maven**
-
-
-Go to the project directory
-
-```bash
-  cd work-planning-service
-```
-
-Build
-
-```bash
-  mvn clean package
-```
-
-Start the server
-
-```bash
-  java -jar server/target/server-1.0-SNAPSHOT.jar
-```
-
 ## Build and Run Locally
 
 Clone the project
