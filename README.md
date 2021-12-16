@@ -19,13 +19,14 @@ This is a maven project with folowing modules
   | `lastName`      | `string` | **Required**. |
   | `active`      | `boolean` | **Required**. |
 
-* Shift - the definnition of a working shift binded to a worker.
+ Shift - the definnition of a working shift binded to a worker.
 
   | Fields | Type     | Description                |
   | :-------- | :------- | :------------------------- |
   | `id`      | `long` | **Required**. The shift start GMT timestamp in seconds |
   | `workerId`      | `string` | **Required**.  |
   | `startTime`      | `timestamp` GMT | **Required**.  Shift start time|
+  | `endTime`      | `timestamp` GMT | **Required**.  Shift end time|
 
 #### Functionnal rules
 
